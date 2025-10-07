@@ -6,15 +6,13 @@
   ],
   "compilerOptions": {
     "checkJs": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "types": [
-        "./worker-configuration.d.ts"
-    ],
+    "types": ["./worker-configuration.d.ts"],
     "paths": {
       "~/*": ["./app/*"]
-    },
+    }
   }
 }
