@@ -26,6 +26,12 @@ Sign up for a Neon account and create a new project: [Neon](https://neon.com/sig
 
 Enable Neon Auth, navigate to Configuration > Environment Variables > React and copy the variables to the `.env` file, replacing the placeholder values.
 
+### Set up Assistant UI
+
+Sign up for a Assistant UI account and create a new project: [Assistant UI](https://cloud.assistant-ui.com/)
+
+From there, copy the project base URL and project slug and add them to the `.env` file. Optionally, you can also generate an API key and add it to the `.env` file. This is not required for the base setup of this template but useful for additional features.
+
 ### Model Provider Setup
 
 This template uses Vercel's AI SDK and Assistant UI for model serving. The `example.env` file has OpenAI set as the provider. Other providers are also supported. Refer to the [AI SDK Providers documentation](https://ai-sdk.dev/docs/foundations/providers-and-models) for more information.
@@ -99,6 +105,10 @@ You can then promote a version to production after verification or roll it out p
 ```sh
 npx wrangler versions deploy
 ```
+
+## Add Worker URL to Neon Auth Trusted Domains
+
+After deploying to Cloudflare Workers for the first time, copy the URL of your app and add it to the Neon Auth trusted domains in your Neon project > Auth > Configuration > Domains section. This enables Neon Auth to redirect back to your app after authentication.
 
 ## Styling
 

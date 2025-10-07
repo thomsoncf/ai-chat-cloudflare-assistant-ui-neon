@@ -1,24 +1,30 @@
 "use client";
 
-import { AssistantRuntimeProvider } from "@assistant-ui/react";
+import { AssistantCloud, AssistantRuntimeProvider } from "@assistant-ui/react";
 import { useChatRuntime } from "@assistant-ui/react-ai-sdk";
 import { Thread } from "~/components/assistant-ui/thread";
 import { ThreadList } from "~/components/assistant-ui/thread-list";
-import { UserButton, useUser } from "@stackframe/react";
+import { useUser } from "@stackframe/react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
+import { ProfileButton } from "~/components/profile-button";
+import { stackClientApp } from "~/lib/stack-auth";
 
 export default function Assistant() {
-  const user = useUser();
-  const runtime = useChatRuntime();
+  const user = useUser({ or: "anonymous" });
+  const cloud = new AssistantCloud({
+    baseUrl: import.meta.env.VITE_ASSISTANT_BASE_URL,
+    userId: user?.id,
+    anonymous: true,
+  });
+  const runtime = useChatRuntime({ cloud });
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="relative">
-        {/* Auth header in top right */}
         <div className="absolute top-4 right-4 z-10">
-          {user ? (
-            <UserButton />
+          {!user?.isAnonymous ? (
+            <ProfileButton />
           ) : (
             <Link to="/handler/sign-in">
               <Button variant="outline">Sign In</Button>

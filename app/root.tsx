@@ -6,7 +6,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation,
 } from "react-router";
 import { StackProvider, StackTheme } from "@stackframe/react";
 import { stackClientApp } from "~/lib/stack-auth";
