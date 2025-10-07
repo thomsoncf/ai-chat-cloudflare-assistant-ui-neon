@@ -1,6 +1,6 @@
 # AI Chat Template: Cloudflare, Assistant UI, Neon
 
-A modern, production-ready template for building full-stack React applications using React Router on Cloudflare with Assistant UI and Neon.
+A modern, production-ready template for building full-stack React applications using Next.js on Cloudflare with Assistant UI and Neon.
 
 ## Getting Started
 
@@ -22,11 +22,11 @@ cp example.env .env
 
 ### Set up Neon
 
-We use Neon for Postgres and Authentication. The schema is currently very simple and only includes the users_sync table but we can expand for agent memory and application data. [Drizzle](https://orm.drizzle.team/) is used for database schema management.
+We use Neon for Storage (Postgres) and Authentication. The schema is currently very simple and only includes the users_sync table but we can expand for agent memory and application data. [Drizzle](https://orm.drizzle.team/) is used for database schema management.
 
-Sign up for a Neon account and create a new project: [Neon](https://neon.com/signup)
+First, sign up for a Neon account and create a new project: [Neon](https://neon.com/signup)
 
-Next, enable Neon Auth, navigate to Configuration > Environment Variables > React and copy the variables to the `.env` file, replacing the placeholder values.
+Next, enable Neon Auth by navigating to Configuration > Environment Variables > Next.js and copy the variables to the `.env` file, replacing the placeholder values.
 
 ### Set up Assistant UI Cloud
 
@@ -56,13 +56,13 @@ npm install
 
 ### Development
 
-Start the development server with HMR:
+Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Your application will be available at `http://localhost:3000`.
 
 ### Deploying Secrets
 
@@ -117,7 +117,3 @@ After deploying to Cloudflare Workers for the first time, copy the URL of your a
 ## Styling
 
 This template comes with [Shadcn UI](https://ui.shadcn.com/) and [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.

@@ -5,11 +5,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ai-chat-template-cloudflare-assistant-ui-neon",
-  "compatibility_flags": ["nodejs_compat"],
-  "compatibility_date": "2025-04-04",
-  "main": "./workers/app.ts",
-  "vars": {
-    "VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets",
   },
   "observability": {
     "enabled": true,
