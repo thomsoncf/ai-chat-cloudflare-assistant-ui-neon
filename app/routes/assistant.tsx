@@ -25,7 +25,7 @@ export default function Assistant() {
             </Link>
           )}
         </div>
-        
+
         <div className="grid h-dvh grid-cols-[200px_1fr] gap-x-2 px-4 py-4">
           <ThreadList />
           <Thread />
