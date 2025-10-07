@@ -22,13 +22,17 @@ cp example.env .env
 
 ### Set up Neon
 
+We use Neon for Postgres and Authentication. The schema is currently very simple and only includes the users_sync table but we can expand for agent memory and application data. [Drizzle](https://orm.drizzle.team/) is used for database schema management.
+
 Sign up for a Neon account and create a new project: [Neon](https://neon.com/signup)
 
-Enable Neon Auth, navigate to Configuration > Environment Variables > React and copy the variables to the `.env` file, replacing the placeholder values.
+Next, enable Neon Auth, navigate to Configuration > Environment Variables > React and copy the variables to the `.env` file, replacing the placeholder values.
 
-### Set up Assistant UI
+### Set up Assistant UI Cloud
 
-Sign up for a Assistant UI account and create a new project: [Assistant UI](https://cloud.assistant-ui.com/)
+We use Assistant UI for AI chat functionality and Assistant UI Cloud for persisting the chat history.
+
+Sign up for a Assistant UI Cloud account and create a new project: [Assistant UI Cloud](https://cloud.assistant-ui.com/)
 
 From there, copy the project base URL and project slug and add them to the `.env` file. Optionally, you can also generate an API key and add it to the `.env` file. This is not required for the base setup of this template but useful for additional features.
 
