@@ -1,4 +1,4 @@
-# Welcome to React Router!
+# AI Chat Template: Cloudflare, Assistant UI, Neon
 
 A modern, production-ready template for building full-stack React applications using React Router on Cloudflare with Assistant UI and Neon.
 
