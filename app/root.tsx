@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -5,7 +6,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
+import { StackProvider, StackTheme } from "@stackframe/react";
+import { stackClientApp } from "~/lib/stack-auth";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -33,7 +37,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <Suspense fallback={null}>
+          <StackProvider app={stackClientApp}>
+            <StackTheme>{children}</StackTheme>
+          </StackProvider>
+        </Suspense>
         <ScrollRestoration />
         <Scripts />
       </body>
