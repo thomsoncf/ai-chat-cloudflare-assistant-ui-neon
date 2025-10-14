@@ -1,0 +1,130 @@
+---
+description: Database schema and Drizzle ORM patterns
+---
+
+# Database Patterns with Drizzle ORM
+
+## Schema Definition
+
+Database schema is defined in [src/lib/db/schema.ts](mdc:src/lib/db/schema.ts).
+
+### Adding New Tables
+
+```typescript
+import { pgTable, serial, text, timestamp, integer } from 'drizzle-orm/pg-core';
+import { usersSync as usersTable } from "drizzle-orm/neon";
+
+// User table is imported from Neon's auth integration
+export { usersTable };
+
+// Define your own tables
+export const postsTable = pgTable('posts_table', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+// Export type-safe models
+export type InsertPost = typeof postsTable.$inferInsert;
+export type SelectPost = typeof postsTable.$inferSelect;
+```
+
+## Database Client
+
+Database client is configured in [src/lib/db/db.ts](mdc:src/lib/db/db.ts) using Neon's serverless driver.
+
+### Using the Database
+
+```typescript
+import { db } from "@/lib/db/db";
+import { postsTable, usersTable } from "@/lib/db/schema";
+import { eq, and, desc } from "drizzle-orm";
+
+// Select query
+const posts = await db
+  .select()
+  .from(postsTable)
+  .where(eq(postsTable.userId, userId))
+  .orderBy(desc(postsTable.createdAt));
+
+// Insert query
+const [newPost] = await db
+  .insert(postsTable)
+  .values({
+    title: "My Post",
+    content: "Content here",
+    userId: user.id,
+  })
+  .returning();
+
+// Update query
+await db
+  .update(postsTable)
+  .set({ title: "Updated Title" })
+  .where(eq(postsTable.id, postId));
+
+// Delete query
+await db
+  .delete(postsTable)
+  .where(eq(postsTable.id, postId));
+
+// Join query
+const postsWithUsers = await db
+  .select()
+  .from(postsTable)
+  .leftJoin(usersTable, eq(postsTable.userId, usersTable.id));
+```
+
+## Migrations
+
+Drizzle Kit is configured in [drizzle.config.ts](mdc:drizzle.config.ts).
+
+### Migration Commands
+
+```bash
+# Generate migration from schema changes
+npm run db:generate
+
+# Run migrations
+npm run db:migrate
+
+# Open Drizzle Studio (database GUI)
+npm run db:studio
+```
+
+### Migration Workflow
+
+1. Update schema in `src/lib/db/schema.ts`
+2. Run `npm run db:generate` to create migration
+3. Review migration in `migrations/` directory
+4. Run `npm run db:migrate` to apply migration
+5. Commit schema and migration files together
+
+## Type Safety
+
+Always use inferred types from schema:
+
+```typescript
+import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm';
+import { postsTable } from '@/lib/db/schema';
+
+type Post = InferSelectModel<typeof postsTable>;
+type NewPost = InferInsertModel<typeof postsTable>;
+
+// Or use exported types
+import type { SelectPost, InsertPost } from '@/lib/db/schema';
+```
+
+## Neon Integration
+
+- Uses `@neondatabase/serverless` driver optimized for edge runtimes
+- Connection string from environment: `DATABASE_URL`
+- Built-in connection pooling and serverless optimizations
+- Auth integration via `usersSync` table from `drizzle-orm/neon`

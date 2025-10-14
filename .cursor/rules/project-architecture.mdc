@@ -1,0 +1,49 @@
+---
+alwaysApply: true
+---
+
+# Project Architecture
+
+This is a full-stack Next.js application deployed on Cloudflare Workers with the following architecture:
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router) with React 19
+- **Runtime**: Cloudflare Workers via OpenNext
+- **Database**: Neon PostgreSQL with Drizzle ORM
+- **Authentication**: Stack Auth (via @stackframe/stack)
+- **AI Chat**: Assistant UI with Vercel AI SDK
+- **Styling**: Tailwind CSS v4 + Shadcn UI (New York style)
+- **Type Safety**: TypeScript with strict mode
+
+## Project Structure
+
+- [src/app/](mdc:src/app/) - Next.js App Router pages and API routes
+  - [src/app/api/chat/route.ts](mdc:src/app/api/chat/route.ts) - Main chat API endpoint
+  - [src/app/page.tsx](mdc:src/app/page.tsx) - Main chat interface (protected route)
+  - [src/app/layout.tsx](mdc:src/app/layout.tsx) - Root layout with Stack Auth provider
+- [src/components/](mdc:src/components/) - React components
+  - [src/components/assistant-ui/](mdc:src/components/assistant-ui/) - Custom Assistant UI components
+  - [src/components/ui/](mdc:src/components/ui/) - Shadcn UI components
+- [src/lib/](mdc:src/lib/) - Shared utilities and configurations
+  - [src/lib/assistant.tsx](mdc:src/lib/assistant.tsx) - Assistant UI runtime setup
+  - [src/lib/db/](mdc:src/lib/db/) - Database schema and client
+  - [src/lib/stack/](mdc:src/lib/stack/) - Stack Auth configuration
+  - [src/lib/utils.ts](mdc:src/lib/utils.ts) - Utility functions (cn helper)
+- [src/hooks/](mdc:src/hooks/) - Custom React hooks
+
+## Key Architectural Patterns
+
+1. **Server Components by Default**: Use server components unless client interactivity is needed
+2. **Authentication**: All protected routes use `stackServerApp.getUser({ or: "redirect" })`
+3. **AI Chat**: Powered by Assistant UI Cloud for persistence and Vercel AI SDK for streaming
+4. **Database**: Drizzle ORM with Neon's serverless driver
+5. **Deployment**: OpenNext for Cloudflare Workers compatibility
+
+## Import Aliases
+
+Use TypeScript path aliases defined in [tsconfig.json](mdc:tsconfig.json):
+- `@/` - Maps to `src/`
+- `@/components` - Maps to `src/components`
+- `@/lib` - Maps to `src/lib`
+- `@/hooks` - Maps to `src/hooks`

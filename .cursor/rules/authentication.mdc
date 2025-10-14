@@ -1,0 +1,125 @@
+---
+description: Stack Auth authentication patterns
+---
+
+# Authentication with Stack Auth
+
+This project uses Stack Auth (@stackframe/stack) for authentication.
+
+## Configuration
+
+Stack Auth is configured in:
+- [src/lib/stack/client.tsx](mdc:src/lib/stack/client.tsx) - Client-side app instance
+- [src/lib/stack/server.tsx](mdc:src/lib/stack/server.tsx) - Server-side app instance
+- [src/lib/stack/utils.ts](mdc:src/lib/stack/utils.ts) - Helper utilities
+
+## Root Layout Setup
+
+The root layout ([src/app/layout.tsx](mdc:src/app/layout.tsx)) wraps the app with Stack providers:
+
+```typescript
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackClientApp } from "@/lib/stack/client";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <StackProvider app={stackClientApp}>
+          <StackTheme>{children}</StackTheme>
+        </StackProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+## Server-Side Authentication
+
+Use in server components and API routes:
+
+```typescript
+import { stackServerApp } from "@/lib/stack/server";
+
+// Protect a page - redirects to login if not authenticated
+export default async function ProtectedPage() {
+  const user = await stackServerApp.getUser({ or: "redirect" });
+  
+  return <div>Welcome, {user.displayName}</div>;
+}
+
+// Optional authentication - returns null if not authenticated
+export default async function OptionalAuthPage() {
+  const user = await stackServerApp.getUser();
+  
+  if (!user) {
+    return <div>Please log in</div>;
+  }
+  
+  return <div>Welcome, {user.displayName}</div>;
+}
+```
+
+## Client-Side Authentication
+
+Use Stack Auth hooks in client components:
+
+```typescript
+"use client";
+
+import { useUser, useStackApp } from "@stackframe/stack";
+
+export function ClientComponent() {
+  const user = useUser({ or: "redirect" }); // Redirects if not authenticated
+  const app = useStackApp();
+  
+  return (
+    <div>
+      <p>Email: {user.primaryEmail}</p>
+      <button onClick={() => app.signOut()}>Sign Out</button>
+    </div>
+  );
+}
+```
+
+## User Properties
+
+Stack Auth user object includes:
+- `id` - Unique user identifier
+- `displayName` - User's display name
+- `primaryEmail` - User's email address
+- `profileImageUrl` - User's profile image
+- `signedUpAt` - Registration timestamp
+
+## Auth Utilities
+
+Use helpers from [src/lib/stack/utils.ts](mdc:src/lib/stack/utils.ts):
+
+```typescript
+import { getUserName } from "@/lib/stack/utils";
+
+const userName = getUserName(user);
+```
+
+## Environment Variables
+
+Stack Auth requires environment variables in `.env`:
+- Stack Auth configuration from Neon project settings
+- See [example.env](mdc:example.env) for required variables
+
+## Protected Routes Pattern
+
+Follow the pattern in [src/app/page.tsx](mdc:src/app/page.tsx):
+
+```typescript
+import { stackServerApp } from "@/lib/stack/server";
+
+export default async function Home() {
+  await stackServerApp.getUser({ or: "redirect" });
+  return <YourProtectedContent />;
+}
+```
+
+## Auth Handler
+
+Stack Auth uses Next.js catch-all route at [src/app/handler/[...stack]/page.tsx](mdc:src/app/handler/[...stack]/page.tsx) for OAuth callbacks and auth flows.
