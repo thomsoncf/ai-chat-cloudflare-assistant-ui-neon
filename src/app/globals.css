@@ -114,6 +114,7 @@
 
 @layer base {
   * {
+    overscroll-behavior-y: none;
     @apply border-border outline-ring/50;
   }
   body {

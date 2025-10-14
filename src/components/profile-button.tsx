@@ -29,7 +29,7 @@ export function ProfileButton() {
               src={user.profileImageUrl || undefined}
               alt={userName}
             />
-            <AvatarFallback className="text-xs font-medium">
+            <AvatarFallback className="text-xs font-medium text-black">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -43,7 +43,7 @@ export function ProfileButton() {
                 src={user.profileImageUrl || undefined}
                 alt={userName}
               />
-              <AvatarFallback className="text-xs font-medium">
+              <AvatarFallback className="text-xs font-medium text-black">
                 {initials}
               </AvatarFallback>
             </Avatar>
