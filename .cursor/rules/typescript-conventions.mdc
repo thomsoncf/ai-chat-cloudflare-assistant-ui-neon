@@ -1,0 +1,78 @@
+---
+globs: *.ts,*.tsx
+---
+
+# TypeScript Conventions
+
+## General Guidelines
+
+- **Strict Mode**: Project uses TypeScript strict mode - always type your code properly
+- **Target**: ES2017 - use modern JavaScript features
+- **Type Inference**: Leverage TypeScript's type inference when possible
+- **Explicit Types**: Use explicit return types for functions and exported values
+
+## Type Definitions
+
+```typescript
+// Prefer interfaces for object shapes
+interface User {
+  id: string;
+  name: string;
+}
+
+// Use type for unions, intersections, and utilities
+type Status = 'pending' | 'active' | 'inactive';
+
+// Infer types from Drizzle schema
+import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm';
+export type SelectUser = InferSelectModel<typeof usersTable>;
+export type InsertUser = InferInsertModel<typeof usersTable>;
+```
+
+## React Component Types
+
+```typescript
+// Prefer function declarations with explicit return type
+export default function Component({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}
+
+// For props interfaces
+interface ComponentProps {
+  title: string;
+  onSubmit?: () => void;
+}
+
+export function Component({ title, onSubmit }: ComponentProps) {
+  // implementation
+}
+```
+
+## Async/Await
+
+- Always use async/await over promises for better readability
+- Handle errors with try/catch blocks
+- Server components can be async directly
+
+```typescript
+export default async function Page() {
+  const user = await stackServerApp.getUser({ or: "redirect" });
+  return <div>{user.displayName}</div>;
+}
+```
+
+## Imports
+
+- Use named exports for utilities and components (except Next.js pages)
+- Import types with `import type` or inline `type` keyword
+- Group imports: external packages → internal modules → relative imports
+
+```typescript
+import { useState } from "react";
+import type { User } from "@stackframe/stack";
+
+import { cn } from "@/lib/utils";
+import type { SelectUser } from "@/lib/db/schema";
+
+import { Button } from "./button";
+```

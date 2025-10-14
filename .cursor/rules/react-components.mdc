@@ -1,0 +1,106 @@
+---
+globs: *.tsx
+---
+
+# React Component Conventions
+
+## Component Structure
+
+Follow these guidelines based on [src/components/](mdc:src/components/) patterns:
+
+### Server vs Client Components
+
+```typescript
+// Server Component (default - no "use client")
+export default async function ServerComponent() {
+  const data = await fetchData();
+  return <div>{data}</div>;
+}
+
+// Client Component (needs interactivity)
+"use client";
+
+import { useState } from "react";
+
+export function ClientComponent() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+```
+
+### Component Files
+
+- One component per file (except small helper components)
+- File names match component names in kebab-case: `profile-button.tsx`
+- Component names use PascalCase: `ProfileButton`
+
+## Styling
+
+Use Tailwind CSS with the `cn()` utility from [src/lib/utils.ts](mdc:src/lib/utils.ts):
+
+```typescript
+import { cn } from "@/lib/utils";
+
+export function Button({ className, ...props }: ButtonProps) {
+  return (
+    <button
+      className={cn(
+        "inline-flex items-center justify-center rounded-md",
+        "bg-primary text-primary-foreground",
+        "hover:bg-primary/90",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+```
+
+## Shadcn UI Components
+
+- Located in [src/components/ui/](mdc:src/components/ui/)
+- Use Shadcn CLI to add new components: `npx shadcn@latest add [component]`
+- Configuration in [components.json](mdc:components.json):
+  - Style: "new-york"
+  - Base color: "neutral"
+  - Icons: Lucide React
+
+## Assistant UI Components
+
+Custom Assistant UI components in [src/components/assistant-ui/](mdc:src/components/assistant-ui/):
+
+- [thread.tsx](mdc:src/components/assistant-ui/thread.tsx) - Main chat thread display
+- [thread-list.tsx](mdc:src/components/assistant-ui/thread-list.tsx) - Thread history sidebar
+- [markdown-text.tsx](mdc:src/components/assistant-ui/markdown-text.tsx) - Markdown rendering
+- [attachment.tsx](mdc:src/components/assistant-ui/attachment.tsx) - File attachments
+- [tool-fallback.tsx](mdc:src/components/assistant-ui/tool-fallback.tsx) - Tool UI fallback
+
+Follow these patterns when extending Assistant UI functionality.
+
+## State Management
+
+- Use React hooks for component state (useState, useReducer)
+- Zustand available for global state management
+- Assistant UI runtime manages chat state
+
+## Forms
+
+- Use React Hook Form with Zod validation
+- Available: `react-hook-form`, `@hookform/resolvers`, `zod`
+
+```typescript
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const schema = z.object({
+  email: z.string().email(),
+});
+
+export function MyForm() {
+  const form = useForm({
+    resolver: zodResolver(schema),
+  });
+  // ...
+}
+```

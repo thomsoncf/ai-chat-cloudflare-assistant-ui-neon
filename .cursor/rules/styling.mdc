@@ -1,0 +1,231 @@
+---
+globs: *.tsx,*.css,globals.css
+---
+
+# Styling Guidelines
+
+## Tailwind CSS v4
+
+This project uses Tailwind CSS v4 with CSS-first configuration.
+
+### Configuration
+
+- **Global styles**: [src/app/globals.css](mdc:src/app/globals.css)
+- **PostCSS**: [postcss.config.mjs](mdc:postcss.config.mjs)
+- **Plugin**: `@tailwindcss/postcss`
+
+### Utility-First Approach
+
+Use Tailwind utility classes directly in JSX:
+
+```typescript
+export function Component() {
+  return (
+    <div className="flex items-center justify-between p-4 rounded-lg bg-card">
+      <h2 className="text-2xl font-bold text-foreground">Title</h2>
+      <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+## Shadcn UI Design System
+
+Configuration in [components.json](mdc:components.json):
+- **Style**: new-york
+- **Base Color**: neutral
+- **CSS Variables**: enabled
+- **Icon Library**: lucide-react
+
+### Color System
+
+Use semantic color tokens from globals.css:
+
+```typescript
+// Backgrounds
+bg-background      // Main background
+bg-card           // Card background
+bg-popover        // Popover background
+
+// Foregrounds
+text-foreground       // Main text
+text-muted-foreground // Secondary text
+
+// UI Elements
+bg-primary text-primary-foreground
+bg-secondary text-secondary-foreground
+bg-accent text-accent-foreground
+bg-destructive text-destructive-foreground
+
+// Borders
+border-border
+border-input
+```
+
+## The cn() Utility
+
+Always use `cn()` from [src/lib/utils.ts](mdc:src/lib/utils.ts) for conditional classes:
+
+```typescript
+import { cn } from "@/lib/utils";
+
+interface ButtonProps {
+  variant?: "default" | "outline";
+  className?: string;
+}
+
+export function Button({ variant = "default", className }: ButtonProps) {
+  return (
+    <button
+      className={cn(
+        // Base styles
+        "inline-flex items-center justify-center rounded-md px-4 py-2",
+        // Variants
+        variant === "default" && "bg-primary text-primary-foreground hover:bg-primary/90",
+        variant === "outline" && "border border-input bg-background hover:bg-accent",
+        // User overrides
+        className
+      )}
+    />
+  );
+}
+```
+
+## Responsive Design
+
+Use Tailwind's responsive prefixes:
+
+```typescript
+<div className="flex flex-col md:flex-row lg:gap-8">
+  <aside className="w-full md:w-64">Sidebar</aside>
+  <main className="flex-1">Content</main>
+</div>
+```
+
+## Dark Mode
+
+Dark mode is handled via CSS variables in globals.css:
+
+```css
+@theme {
+  --color-background: light-dark(white, hsl(224 71% 4%));
+  --color-foreground: light-dark(hsl(224 71% 4%), hsl(213 31% 91%));
+}
+```
+
+Use `next-themes` for theme switching (available in dependencies).
+
+## Component Variants
+
+For complex variant patterns, use `class-variance-authority`:
+
+```typescript
+import { cva, type VariantProps } from "class-variance-authority";
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        outline: "border border-input bg-background hover:bg-accent",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 px-3",
+        lg: "h-11 px-8",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {}
+
+export function Button({ className, variant, size, ...props }: ButtonProps) {
+  return <button className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+}
+```
+
+## Icons
+
+Use Lucide React for icons:
+
+```typescript
+import { User, Settings, LogOut } from "lucide-react";
+
+export function Navigation() {
+  return (
+    <nav>
+      <button><User className="h-4 w-4" /> Profile</button>
+      <button><Settings className="h-4 w-4" /> Settings</button>
+      <button><LogOut className="h-4 w-4" /> Logout</button>
+    </nav>
+  );
+}
+```
+
+## Fonts
+
+Uses Geist font family (configured in [layout.tsx](mdc:src/app/layout.tsx)):
+- Geist Sans - Main font
+- Geist Mono - Monospace font
+
+```typescript
+import { Geist, Geist_Mono } from "next/font/google";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+```
+
+## Layout Utilities
+
+Common layout patterns:
+
+```typescript
+// Centered container
+<div className="container mx-auto px-4">
+
+// Full height viewport
+<div className="h-dvh">
+
+// Flex centering
+<div className="flex items-center justify-center">
+
+// Grid layout
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+```
+
+## Animation
+
+Use `motion` (Framer Motion) for animations:
+
+```typescript
+import { motion } from "motion/react";
+
+export function AnimatedComponent() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      Content
+    </motion.div>
+  );
+}
+```

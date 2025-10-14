@@ -1,0 +1,135 @@
+---
+description: Cloudflare Workers deployment with OpenNext
+---
+
+# Deployment to Cloudflare Workers
+
+This project deploys to Cloudflare Workers using OpenNext.
+
+## Build Configuration
+
+- **[next.config.ts](mdc:next.config.ts)** - Next.js configuration
+- **[open-next.config.ts](mdc:open-next.config.ts)** - OpenNext Cloudflare configuration
+- **[wrangler.jsonc](mdc:wrangler.jsonc)** - Wrangler (Cloudflare CLI) configuration
+
+## Development
+
+```bash
+# Local development with Turbopack
+npm run dev
+
+# Access at http://localhost:3000
+```
+
+## Preview Production Build Locally
+
+```bash
+# Build and preview with Cloudflare Workers environment
+npm run preview
+```
+
+## Deploy to Production
+
+```bash
+# Build and deploy directly to production
+npm run deploy
+```
+
+## Deploy Preview Version
+
+```bash
+# Upload a new version without promoting to production
+npx wrangler versions upload
+
+# View versions
+npx wrangler versions list
+
+# Promote a version to production
+npx wrangler versions deploy
+
+# Or deploy with progressive rollout
+npx wrangler versions deploy --percentage 10
+```
+
+## Environment Variables & Secrets
+
+### Local Development
+
+Create `.env` file from [example.env](mdc:example.env):
+
+```bash
+cp example.env .env
+```
+
+Required variables:
+- Stack Auth credentials (from Neon project)
+- `DATABASE_URL` - Neon PostgreSQL connection string
+- `NEXT_PUBLIC_ASSISTANT_BASE_URL` - Assistant UI Cloud base URL
+- `OPENAI_API_KEY` - Or other AI provider API key
+
+### Production Secrets
+
+Deploy secrets to Cloudflare:
+
+```bash
+# Bulk upload from .env file
+wrangler secret bulk .env
+
+# Or set individual secrets
+wrangler secret put SECRET_NAME
+```
+
+Client-side variables (prefixed with `NEXT_PUBLIC_`) must be set in `wrangler.jsonc` under `vars`.
+
+## Cloudflare Limits
+
+- **Max Duration**: 30 seconds for streaming responses
+  - Set `export const maxDuration = 30;` in route handlers
+- **Memory**: Depends on Workers plan
+- **Storage**: Use Neon for database, not Cloudflare KV for relational data
+
+## Post-Deployment
+
+After first deployment:
+
+1. Copy your Cloudflare Workers URL
+2. Add URL to Neon Auth trusted domains:
+   - Navigate to your Neon project
+   - Go to Auth > Configuration > Domains
+   - Add your Workers URL
+
+## Wrangler CLI
+
+Make sure you have the latest Wrangler:
+
+```bash
+npm install -g wrangler
+
+# Login to Cloudflare
+wrangler login
+
+# View deployment logs
+wrangler tail
+
+# View deployment status
+wrangler deployments list
+```
+
+## Type Generation
+
+Generate Cloudflare environment types:
+
+```bash
+npm run cf-typegen
+```
+
+This updates [cloudflare-env.d.ts](mdc:cloudflare-env.d.ts) with proper types for environment variables.
+
+## Assets
+
+Static assets in [public/](mdc:public/) are automatically deployed:
+- [public/_headers](mdc:public/_headers) - Custom HTTP headers configuration
+
+## Build Output
+
+OpenNext builds to `.open-next` directory (gitignored). The build is optimized for Cloudflare Workers edge runtime.
