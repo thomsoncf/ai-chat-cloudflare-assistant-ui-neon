@@ -29,7 +29,7 @@ export const Assistant = () => {
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="flex h-dvh flex-col">
-        <header className="relative w-full flex items-center justify-between px-4 py-2 bg-[#FF4A04] text-white border-b border-[#FBAE41] overflow-hidden">
+        <header className="relative w-full flex items-center justify-between px-4 py-2 bg-[#FF4A04] text-white border-b border-[#FBAE41] min-h-0">
           {/* Dither background effect */}
           <div className="absolute inset-0 w-full h-full z-0">
             <Dither
@@ -55,7 +55,7 @@ export const Assistant = () => {
             <ProfileButton />
           </div>
         </header>
-        <div className="grid flex-1 grid-cols-[200px_1fr] gap-x-2 px-4 py-4 overflow-hidden">
+        <div className="grid flex-1 grid-cols-[200px_1fr] gap-x-2 px-4 py-4 min-h-0">
           <ThreadList />
           <Thread />
         </div>
