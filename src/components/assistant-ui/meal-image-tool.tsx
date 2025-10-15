@@ -1,9 +1,21 @@
 import type { ToolCallMessagePartComponent } from "@assistant-ui/react";
+import { useThreadRuntime } from "@assistant-ui/react";
 import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { ChefHatIcon } from "lucide-react";
 
 export const MealImageTool: ToolCallMessagePartComponent = ({
   result,
 }) => {
+  const threadRuntime = useThreadRuntime();
+  
+  const handleGenerateRecipe = (mealName: string) => {
+    threadRuntime.append({
+      role: "user",
+      content: [{ type: "text", text: `Use the generateRecipe tool to create a detailed recipe for: ${mealName}` }]
+    });
+  };
+
   if (!result) {
     return (
       <div className="aui-meal-image-loading mb-4 flex items-center gap-3 rounded-lg border border-yellow-400/50 bg-gradient-to-r from-yellow-400/10 to-red-500/10 p-4">
@@ -58,10 +70,19 @@ export const MealImageTool: ToolCallMessagePartComponent = ({
           </div>
         </motion.div>
       </motion.div>
-      <div className="mt-2 text-center">
+      <div className="mt-2 flex flex-col items-center gap-2">
         <p className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
           🍽️ AI-Generated Meal Image
         </p>
+        <Button
+          variant="default"
+          size="sm"
+          className="gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+          onClick={() => handleGenerateRecipe(resultData.prompt || "this meal")}
+        >
+          <ChefHatIcon className="h-4 w-4" />
+          Generate Recipe
+        </Button>
       </div>
     </motion.div>
   );
