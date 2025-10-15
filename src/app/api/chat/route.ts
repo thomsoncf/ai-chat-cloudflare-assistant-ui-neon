@@ -21,33 +21,20 @@ export async function POST(req: Request) {
     execute: async ({ prompt }: { prompt: string }) => {
       try {
         // Get Cloudflare context inside execute function
-        const aibinding = getCloudflareContext().env.AI;
-        
-        if (!aibinding) {
-          return { error: "AI binding is not configured in Cloudflare environment" };
-        }
 
-        const response = await aibinding.run(
+        const { image } = await getCloudflareContext().env.AI.run(
           "@cf/leonardo/lucid-origin",
           {prompt: prompt}, 
         );
 
+        console.log(image);
+
         // The response is a binary image (Response or ArrayBuffer)
         let arrayBuffer: ArrayBuffer;
+      
         
-        if (response instanceof Response) {
-          const imageBlob = await response.blob();
-          arrayBuffer = await imageBlob.arrayBuffer();
-        } else if (response instanceof ArrayBuffer) {
-          arrayBuffer = response;
-        } else {
-          // Handle as ReadableStream or convert to ArrayBuffer
-          const blob = new Blob([response]);
-          arrayBuffer = await blob.arrayBuffer();
-        }
-        
-        const base64 = Buffer.from(arrayBuffer).toString("base64");
-        const dataUrl = `data:image/jpeg;base64,${base64}`;
+        // const base64 = Buffer.from(image).toString("base64");
+        const dataUrl = `data:image/jpeg;base64,${image}`;
 
         return {
           imageUrl: dataUrl,
