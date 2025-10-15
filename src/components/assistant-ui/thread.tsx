@@ -26,6 +26,7 @@ import * as m from "motion/react-m";
 import { Button } from "@/components/ui/button";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
+import { MealImageTool } from "@/components/assistant-ui/meal-image-tool";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 import {
   ComposerAddAttachment,
@@ -229,7 +230,12 @@ const AssistantMessage: FC = () => {
           <MessagePrimitive.Parts
             components={{
               Text: MarkdownText,
-              tools: { Fallback: ToolFallback },
+              tools: { 
+                Fallback: ToolFallback,
+                by_name: {
+                  generateMealImage: MealImageTool,
+                },
+              },
             }}
           />
           <MessageError />
